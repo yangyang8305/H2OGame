@@ -4,6 +4,9 @@
  * @copyright        (c) 2014-2015, Pierre-Henry Soria. All Rights Reserved.
  * @license          See H2O.LICENSE.txt and H2O.COPYRIGHT.txt in the root directory.
  * @link             http://hizup.com
+ *
+ * Updated: corrected language code keys to match actual .php filenames.
+ * Codes follow ISO 639-1 standard as used by Accept-Language headers.
  */
 
 namespace H2O;
@@ -13,28 +16,27 @@ return array(
     'en' => 'English',
     'fr' => 'Français',
     'de' => 'Deutsch',
-    'nl' => 'Dutch',
+    'nl' => 'Nederlands',
     'es' => 'Español',
     'it' => 'Italiano',
     'pt' => 'Português',
-    'pt' => 'Português',
-    'ru' => 'русский',
-    'sa' => 'العربية',
-    'he' => 'עִבְרִית',
-    'jp' => '日本語',
-    'cn' => '中文简体',
-    'cn' => '中文 繁體',
+    'ru' => 'Русский',
+    'ar' => 'العربية',
+    'ja' => '日本語',
+    'zh' => '中文简体',
+    'ko' => '한국어',
     'tr' => 'Türkçe',
-    'dk' => 'Dansk',
-    'no' => 'Norsk',
-    'cz' => 'Český',
-    'bn' => 'বাংলা',
-    'ro' => 'Română',
+    'da' => 'Dansk',
+    'sv' => 'Svenska',
+    'fi' => 'Suomi',
     'pl' => 'Polski',
-    'ba' => 'Bosanski',
-    'hr' => 'Hrvatski',
-    'rs' => 'Srpski',
-    'si' => 'Slovenski',
-    'sw' => 'Kiswahili',
-    'hu' => 'Magyar'
+    'uk' => 'Українська',
+    'vi' => 'Tiếng Việt',
+    'th' => 'ภาษาไทย',
+    'id' => 'Bahasa Indonesia',
+    'hi' => 'हिन्दी',
+    'no' => 'Norsk',
+    'cs' => 'Český',
+    'ro' => 'Română',
+    'hu' => 'Magyar',
 );
