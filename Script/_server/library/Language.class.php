@@ -35,26 +35,66 @@ class Language
         {
             $this->_sLang = $oCookie->get(self::COOKIE_NAME);
         }
-        elseif (is_file(H2O_SERVER_PATH . 'app/modules/' . $sMod . '/languages/' . $this->getBrowser() . '.php') && is_file(H2O_SERVER_PATH . 'app/languages/' . $this->getBrowser() . '.php'))
-        {
-            $this->_sLang = $this->getBrowser();
-        }
         else
         {
-            $this->_sLang = Controller::DEFAULT_LANG;
+            $sBrowser = $this->getBrowser($sMod);
+            if (!empty($sBrowser))
+            {
+                $this->_sLang = $sBrowser;
+            }
+            else
+            {
+                $this->_sLang = Controller::DEFAULT_LANG;
+            }
         }
         unset($oCookie);
     }
 
     /**
-     * Get the language of the client browser.
+     * Get the best matching language from the browser's Accept-Language header.
+     * Supports quality values (q=) and region subtags (zh-CN, en-US).
      *
-     * @return string First two letters of the languages ​​of the client browser.
+     * @param string $sMod Current module name, used to check language file existence.
+     * @return string|null Two-letter language code, or null if no match found.
      */
-    public function getBrowser()
+    public function getBrowser($sMod = null)
     {
-        $sLang = explode(',',@$_SERVER['HTTP_ACCEPT_LANGUAGE']);
-        return htmlspecialchars(strtolower(substr(chop($sLang[0]),0,2)), ENT_QUOTES);
+        if (empty($_SERVER['HTTP_ACCEPT_LANGUAGE'])) {
+            return null;
+        }
+
+        if ($sMod === null) {
+            $sMod = Application::getModule();
+        }
+
+        $aTags = [];
+        foreach (explode(',', $_SERVER['HTTP_ACCEPT_LANGUAGE']) as $sPart) {
+            $sPart = trim($sPart);
+            // Match: zh-CN, en-US, fr;q=0.8, ar;q=0.9, etc.
+            if (preg_match('/^([a-zA-Z]{2,3})(?:[_\-][a-zA-Z]{2,4})?(?:;q=([0-9.]+))?$/', $sPart, $aM)) {
+                $sCode = strtolower($aM[1]);
+                $fQ    = isset($aM[2]) ? (float)$aM[2] : 1.0;
+                // Keep the highest quality score for duplicate codes
+                if (!isset($aTags[$sCode]) || $aTags[$sCode] < $fQ) {
+                    $aTags[$sCode] = $fQ;
+                }
+            }
+        }
+
+        // Sort by quality descending
+        arsort($aTags);
+
+        foreach (array_keys($aTags) as $sCode) {
+            $sCode = htmlspecialchars($sCode, ENT_QUOTES);
+            if (
+                is_file(H2O_SERVER_PATH . 'app/modules/' . $sMod . '/languages/' . $sCode . '.php') &&
+                is_file(H2O_SERVER_PATH . 'app/languages/' . $sCode . '.php')
+            ) {
+                return $sCode;
+            }
+        }
+
+        return null;
     }
 
     public function get()
